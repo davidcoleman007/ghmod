@@ -5,6 +5,7 @@ import { resolve } from 'path';
 export interface GhmodOptions {
   recursive?: boolean;
   verbose?: boolean;
+  gitOptions?: string[];  // Array of additional git options
 }
 
 export class GhmodError extends Error {
@@ -39,12 +40,14 @@ export function setFileMode(filePath: string, mode: string | number, options: Gh
   const modeNum = typeof mode === 'string' ? parseMode(mode) : mode;
 
   // Convert mode to git format
-  // Git uses 100755 for executable files and 100644 for non-executable files
-  const gitMode = modeNum & 0o111 ? '100755' : '100644';
+  // Git uses +x for executable files and -x for non-executable files
+  const gitMode = modeNum & 0o111 ? '+x' : '-x';
 
   try {
-    // Update the git index with the new mode
-    execSync(`git update-index --chmod=${gitMode} "${resolvedPath}"`, { stdio: 'inherit' });
+    // Build git command with additional options
+    const additionalOptions = options.gitOptions ? options.gitOptions.join(' ') : '';
+    const gitCommand = `git update-index ${additionalOptions} --chmod=${gitMode} "${resolvedPath}"`;
+    execSync(gitCommand, { stdio: 'inherit' });
 
     if (options.verbose) {
       console.log(`Changed mode of ${resolvedPath} to ${modeNum.toString(8)}`);
