@@ -16,15 +16,17 @@ export class GhmodError extends Error {
 }
 
 export function parseMode(mode: string): number {
-  // Handle symbolic mode (e.g., +x, -x, =x)
-  if (mode.startsWith('+') || mode.startsWith('-') || mode.startsWith('=')) {
-    throw new GhmodError('Symbolic mode not supported. Please use octal mode (e.g., 755)');
+  // Handle symbolic mode (e.g., +x, -x)
+  if (mode === '+x') {
+    return 0o755;  // Make executable
+  } else if (mode === '-x') {
+    return 0o644;  // Make non-executable
   }
 
   // Parse octal mode
   const modeNum = parseInt(mode, 8);
   if (isNaN(modeNum) || modeNum < 0 || modeNum > 777) {
-    throw new GhmodError('Invalid mode. Please use a valid octal number (0-777)');
+    throw new GhmodError('Invalid mode. Please use a valid octal number (0-777) or symbolic mode (+x/-x)');
   }
 
   return modeNum;
