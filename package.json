@@ -19,7 +19,7 @@
     "windows",
     "executable"
   ],
-  "author": "david_coleman_007",
+  "author": "davidcoleman007",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.11.24",
