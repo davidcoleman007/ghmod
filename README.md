@@ -44,6 +44,11 @@ Make a file non-executable (using symbolic mode):
 ghmod -x script.sh
 ```
 
+Make a file non-executable (using octal mode):
+```bash
+ghmod 644 script.sh
+```
+
 Make multiple files executable:
 ```bash
 ghmod +x script1.sh script2.sh
